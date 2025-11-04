@@ -1,15 +1,15 @@
 #pragma once
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stddef.h>
-
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
-
 #define VGA_PORT_COMMAND 0x3D4
 #define VGA_PORT_DATA    0x3D5
 

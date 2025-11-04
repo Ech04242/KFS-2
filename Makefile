@@ -49,10 +49,11 @@ MKDIR	=	mkdir -p
 #        INCLUDES       #
 #########################
 
-$(NAME): $(OBJS) Amorcage/boot.asm
-	@nasm -f elf32 Amorcage/boot.asm -o .obj/boot.o
+$(NAME): $(OBJS)
+	@nasm -f elf32 NASM/boot.asm -o .obj/boot.o
+	@nasm -f elf32 NASM/utils.asm -o .obj/nasm_utils.o
 	$(call green,"Compilation de kfs...")
-	@ld -m elf_i386 -T linker/linker.ld -o $(NAME).bin .obj/boot.o $(OBJS)
+	@ld -m elf_i386 -T linker/linker.ld -o $(NAME).bin .obj/boot.o .obj/nasm_utils.o $(OBJS)
 	$(call purple,"Build terminé avec succès!")
 
 
