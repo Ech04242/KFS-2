@@ -43,6 +43,8 @@ enum vga_color {
 uint32_t ft_strlen(const char* str);
 void	*ft_memmove(void *dest, const void *src, size_t n);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
+size_t	ft_memcmp(const void *s1, const void *s2, size_t n);
+
 
 // kernel.c
 void term_init();

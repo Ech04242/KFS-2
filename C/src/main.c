@@ -1,11 +1,32 @@
 #include "../headers/header.h"
 
-extern uint8_t inb(uint16_t port);
-extern size_t terminal_row[NUM_PROFILES];
-extern size_t terminal_column[NUM_PROFILES];
-extern uint8_t terminal_color;
-extern uint8_t	activ_user;
+extern uint8_t		inb(uint16_t port);
+extern void			outb(uint16_t port, uint8_t value);
+extern size_t		terminal_row[NUM_PROFILES];
+extern size_t		terminal_column[NUM_PROFILES];
+extern uint8_t		terminal_color;
+extern uint8_t		activ_user;
+extern uint16_t*	terminal_buffer;
 
+void reboot() {
+    outb(0x64, 0xFE);
+    while(1) { __asm__ volatile ("hlt"); }
+}
+
+static void check_cmd(){
+	char cmd[VGA_WIDTH - 6];
+
+	size_t	start = 6 + (VGA_WIDTH * (terminal_row[activ_user]));
+	size_t	end = start + 72;
+	
+	for (size_t i = 0; start <= end; start++) {
+		cmd[i++] = (char)terminal_buffer[start];
+	}
+
+	if (!(ft_memcmp(cmd, "reboot\0", 7))){
+		reboot();
+	}
+}
 
 void kernel_main(void)
 {
@@ -23,7 +44,7 @@ void kernel_main(void)
 				if (terminal_column[activ_user] > 6)
 				{
 					terminal_column[activ_user]--;
-					term_put_entry_at(' ', 7, terminal_column[activ_user], terminal_row[activ_user]);
+					term_put_entry_at('\0', 7, terminal_column[activ_user], terminal_row[activ_user]);
 					term_move_cursor();
 				}
 			}
@@ -31,9 +52,14 @@ void kernel_main(void)
 				switch_profile(c - F1);
 			else if (c)
 			{
-				term_put_char(c);
-        		if (c == '\n')
-          		print_user();
+				if (c == '\n'){
+					check_cmd();
+					term_put_char(c);
+					print_user();
+				}
+				else {
+					term_put_char(c);
+				}
 			}
 		}
 	}
