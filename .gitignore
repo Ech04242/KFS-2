@@ -1,4 +1,6 @@
 .obj/
+.objnasm/
 .vscode/
-kfs1.bin
-kfs1.iso
+iso/
+kfs2.bin
+kfs2.iso

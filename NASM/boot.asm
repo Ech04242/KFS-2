@@ -24,13 +24,17 @@ section .text
     extern kernel_main
 
 
+gdtr DW 0 ; For limit storage
+	 DD 0 ; For base storage
+
+
 _start:
     cli                    ; Désactive interruptions
     lgdt [gdtr]
     mov eax, cr0
     or al, 1
     mov cr0, eax           ; Passage en mode protege
-    jmp 08h:PModeMain
+;    jmp 08h:PModeMain
     mov esp, stack_top     ; Initialise la pile
     call kernel_main       ; Appel du noyau en C
 
@@ -43,4 +47,28 @@ PModeMain:
     hlt                    ; Stoppe le processeur en attendant interruption
     jmp .hang              ; Boucle infinie
 
+
+
+setGdt:
+	mov   AX, [esp + 4]
+	mov   [gdtr], AX
+	mov   EAX, [ESP + 8]
+	mov   [gdtr + 2], EAX
+	lgdt  [gdtr]
+	ret
+
+
+reloadSegments:
+	; Reload CS register containing code selector:
+	jmp   0x08:.reload_CS ; 0x08 is a stand-in for your code segment
+
+.reload_CS:
+	; Reload data segment registers:
+	mov   AX, 0x10 ; 0x10 is a stand-in for your data segment
+	mov   DS, AX
+	mov   ES, AX
+	mov   FS, AX
+	mov   GS, AX
+	mov   SS, AX
+	ret
 

@@ -42,7 +42,7 @@ OBJNASM_PATH= .objnasm/
 
 
 SRC     =   main.c  printk.c utils.c kernel.c input.c print_message.c init.c
-NASM    =   boot.asm GDT.asm nasm_utils.asm
+NASM    =   boot.asm nasm_utils.asm #GDT.asm
 
 OBJ     =   $(SRC:.c=.o)
 OBJS    =   $(addprefix $(OBJ_PATH), $(OBJ))
@@ -102,6 +102,7 @@ build_iso:
 
 clean:
 	@$(RMDIR) .obj
+	@$(RMDIR) .objnasm
 	@$(call yelow,"clean kfs ok ✅")
 
 
@@ -113,6 +114,7 @@ clean:
 fclean:
 	@$(RM) $(NAME)
 	@$(RMDIR) .obj
+	@$(RMDIR) .objnasm
 	@$(RMDIR) iso/
 	@$(RM) $(NAME).bin
 	@$(call yelow,"fclean kfs ✅")
