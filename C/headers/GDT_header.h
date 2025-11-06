@@ -44,4 +44,4 @@
                     SEG_PRIV(3)     | SEG_DATA_RDWR
 
 
-int gdt_init();
+int GDT_init(void);

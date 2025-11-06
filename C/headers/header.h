@@ -66,6 +66,7 @@ char keyboard_getchar(void);
 // print_message.c
 void print_open_message();
 void print_user();
+void print_GDT();
 
 // init.c
 void    init_all_profil();

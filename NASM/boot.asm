@@ -25,7 +25,7 @@ section .text
 
 
 gdtr DW 0 ; For limit storage
-	 DD 0 ; For base storage
+     DQ 0 ; For base storage
 
 
 _start:
@@ -34,13 +34,10 @@ _start:
     mov eax, cr0
     or al, 1
     mov cr0, eax           ; Passage en mode protege
-;    jmp 08h:PModeMain
     mov esp, stack_top     ; Initialise la pile
     call kernel_main       ; Appel du noyau en C
 
 
-PModeMain:
-; load DS, ES, FS, GS, SS, ESP
 
 
 .hang:
@@ -50,25 +47,26 @@ PModeMain:
 
 
 setGdt:
-	mov   AX, [esp + 4]
-	mov   [gdtr], AX
-	mov   EAX, [ESP + 8]
-	mov   [gdtr + 2], EAX
-	lgdt  [gdtr]
-	ret
+   MOV   [gdtr], DI
+   MOV   [gdtr+2], RSI
+   LGDT  [gdtr]
+   RET
 
 
 reloadSegments:
-	; Reload CS register containing code selector:
-	jmp   0x08:.reload_CS ; 0x08 is a stand-in for your code segment
+   ; Reload CS register:
+   PUSH 0x08                 ; Push code segment to stack, 0x08 is a stand-in for your code segment
+   LEA RAX, [rel .reload_CS] ; Load address of .reload_CS into RAX
+   PUSH RAX                  ; Push this value to the stack
+   RETFQ                     ; Perform a far return, RETFQ or LRETQ depending on syntax
 
 .reload_CS:
-	; Reload data segment registers:
-	mov   AX, 0x10 ; 0x10 is a stand-in for your data segment
-	mov   DS, AX
-	mov   ES, AX
-	mov   FS, AX
-	mov   GS, AX
-	mov   SS, AX
-	ret
+   ; Reload data segment registers
+   MOV   AX, 0x10 ; 0x10 is a stand-in for your data segment
+   MOV   DS, AX
+   MOV   ES, AX
+   MOV   FS, AX
+   MOV   GS, AX
+   MOV   SS, AX
+   RET
 

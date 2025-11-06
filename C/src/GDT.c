@@ -4,19 +4,19 @@
 #include "../headers/GDT_header.h"
 
 
-typedef struct GDT
+struct GDT
 {
-	limit;
-	base;
-	access_byte;
-	flags;
+	unsigned int limit;
+	unsigned int base;
+	unsigned short access_byte;
+	unsigned char flags;
 };
 
 
 void encodeGdtEntry(uint8_t *target, struct GDT source)
 {
     // Check the limit to make sure that it can be encoded
-    if (source.limit > 0xFFFFF) {kerror("GDT cannot encode limits larger than 0xFFFFF");}
+    if (source.limit > 0xFFFFF) {ft_printk("GDT cannot encode limits larger than 0xFFFFF");}
     
     // Encode the limit
     target[0] = source.limit & 0xFF;
@@ -54,7 +54,7 @@ void create_descriptor(uint32_t base, uint32_t limit, uint16_t flag)
 	descriptor |= base  << 16;                       // set base bits 15:0
 	descriptor |= limit  & 0x0000FFFF;               // set limit bits 15:0
  
-	printf("0x%.16llX\n", descriptor);
+	//ft_printk("0x%.16llX\n", descriptor);
 }
 
 int GDT_init(void)

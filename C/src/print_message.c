@@ -16,3 +16,14 @@ void	print_user(){
 	ft_printk("USER >");
 	terminal_color = temp;
 }
+
+void print_GDT()
+{
+
+	ft_printk("NULL : %p\n", (int *) 0x000000);
+	ft_printk("K Code Seg. : %p\n", (int *) 0x9A);
+	ft_printk("K Mode Data Seg : %p\n", (int *) 0x92);
+	ft_printk("U Mode Code Seg : %p\n", (int *) 0xFA);
+	ft_printk("U Mode Data Seg : %p\n", (int *) 0xF2);
+	ft_printk("Task State Seg : %p\n", (int *) 0x89);
+}
