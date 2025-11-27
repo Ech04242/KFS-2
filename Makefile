@@ -41,7 +41,7 @@ DEP_PATH    = .dep/
 OBJNASM_PATH= .objnasm/
 
 
-SRC     =   main.c  printk.c utils.c kernel.c input.c print_message.c init.c GDT.c
+SRC     =   main.c  printk.c utils.c kernel.c input.c print_message.c init.c GDT.c IDT.c
 NASM    =   boot.asm nasm_utils.asm GDT.asm IDT.asm
 
 OBJ     =   $(SRC:.c=.o)

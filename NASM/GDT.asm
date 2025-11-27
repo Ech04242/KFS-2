@@ -19,12 +19,12 @@ setGdt:
 
 reloadSegments:
 	; Reload CS register containing code selector:
-	jmp   0x08:.reload_CS ; 0x08 is a stand-in for your code segment
+	jmp   0x10:.reload_CS ; 0x08 is a stand-in for your code segment
 	ret
 
 .reload_CS:
 	; Reload data segment registers:
-	mov   AX, 0x10 ; 0x10 is a stand-in for your data segment
+	mov   AX, 0x18 ; 0x10 is a stand-in for your data segment
 	mov   DS, AX
 	mov   ES, AX
 	mov   FS, AX
