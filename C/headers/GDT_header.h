@@ -44,4 +44,15 @@
                     SEG_PRIV(3)     | SEG_DATA_RDWR
 
 
-int gdt_init();
+struct GDT
+{
+	uint16_t limit;
+	uint16_t base;
+	uint8_t access_byte;
+	uint16_t flags;
+};
+
+
+int GDT_init();
+
+extern void setGdt(struct GDT gdt_ptr);

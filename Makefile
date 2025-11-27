@@ -41,8 +41,8 @@ DEP_PATH    = .dep/
 OBJNASM_PATH= .objnasm/
 
 
-SRC     =   main.c  printk.c utils.c kernel.c input.c print_message.c init.c
-NASM    =   boot.asm nasm_utils.asm #GDT.asm
+SRC     =   main.c  printk.c utils.c kernel.c input.c print_message.c init.c GDT.c
+NASM    =   boot.asm nasm_utils.asm GDT.asm IDT.asm
 
 OBJ     =   $(SRC:.c=.o)
 OBJS    =   $(addprefix $(OBJ_PATH), $(OBJ))
@@ -138,6 +138,12 @@ run:
 
 run_iso:
 	qemu-system-i386 -cdrom ./iso/$(NAME).iso
+
+run_iso_monitor:
+	qemu-system-i386 -cdrom ./iso/$(NAME).iso -monitor telnet:127.0.0.1:1234,server,nowait  
+
+run_monitoring:
+	telnet 127.0.0.1 1234
 
 run_debug:
 	qemu-system-i386 -kernel $(NAME).bin -s -S & gdb -x .gdbinit

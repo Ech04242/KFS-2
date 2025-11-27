@@ -1,4 +1,5 @@
 #include "../headers/header.h"
+#include "../headers/GDT_header.h"
 
 extern uint8_t		inb(uint16_t port);
 extern void			outb(uint16_t port, uint8_t value);
@@ -30,6 +31,7 @@ static void check_cmd(){
 
 void kernel_main(void)
 {
+	GDT_init();
 	term_init();
 	term_move_cursor();
 	print_open_message();
