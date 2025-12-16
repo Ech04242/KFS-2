@@ -26,13 +26,9 @@ section .text
 
 
 _start:
-    cli                    ; Désactive interruptions
-    lgdt [gdtr]
-    mov eax, cr0
-    or al, 1
-    mov cr0, eax           ; Passage en mode protege
-;    jmp 08h:PModeMain
     mov esp, stack_top     ; Initialise la pile
+;    cli
+    mov esp, stack_top
     call kernel_main       ; Appel du noyau en C
 
 

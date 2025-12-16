@@ -28,31 +28,46 @@
 #define SEG_CODE_EXRDCA    0x0F // Execute/Read, conforming, accessed
  
 #define GDT_CODE_PL0 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
-                    SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
-                    SEG_PRIV(0)     | SEG_CODE_EXRD
+					SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+					SEG_PRIV(0)     | SEG_CODE_EXRD
  
 #define GDT_DATA_PL0 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
-                    SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
-                    SEG_PRIV(0)     | SEG_DATA_RDWR
+					SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+					SEG_PRIV(0)     | SEG_DATA_RDWR
+
+#define GDT_STACK_PL0 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
+					SEG_LONG(0)		| SEG_SIZE(1) | SEG_GRAN(1) | \
+					SEG_PRIV(0)		| SEG_DATA_RDWREXPD
  
 #define GDT_CODE_PL3 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
-                    SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
-                    SEG_PRIV(3)     | SEG_CODE_EXRD
+					SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+					SEG_PRIV(3)     | SEG_CODE_EXRD
  
 #define GDT_DATA_PL3 SEG_DESCTYPE(1) | SEG_PRES(1) | SEG_SAVL(0) | \
-                    SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
-                    SEG_PRIV(3)     | SEG_DATA_RDWR
+					SEG_LONG(0)     | SEG_SIZE(1) | SEG_GRAN(1) | \
+					SEG_PRIV(3)     | SEG_DATA_RDWR
+
+#define FLAG_32 SEG_LONG(0) | SEG_GRAN(1)
+
+#define GDT_ENTRIES 6
 
 
-struct GDT
+typedef struct __attribute__((packed))  GDT
 {
 	uint16_t limit;
-	uint16_t base;
-	uint8_t access_byte;
+	uint16_t base_low;
+	uint8_t base_mid;
+	uint8_t base_high;
+	uint8_t access;
 	uint16_t flags;
-};
+} gdt;
 
+struct __attribute__((packed)) GDT_ptr
+{
+	uint16_t limit;
+	uint32_t base;
+};
 
 int GDT_init();
 
-extern void setGdt(struct GDT gdt_ptr);
+extern void setGdt(uint32_t gdt_ptr);

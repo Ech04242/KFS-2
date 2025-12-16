@@ -8,13 +8,23 @@ gdtr DW 0 ; For limit storage
 	 DD 0 ; For base storage
 
 setGdt:
-	mov   AX, [esp + 4]
-	mov   [gdtr], AX
-	mov   EAX, [ESP + 8]
-	mov   [gdtr + 2], EAX
-	lgdt  [gdtr]
-	call reloadSegments
+	mov eax, [esp + 4]
+	lgdt [eax]
+
+	mov ax, 0x10
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov ss, ax
+  
+	mov ax, 0x18
+	mov gs, ax
+
+	jmp 0x08:.flush
+
+.flush:
 	ret
+
 
 
 reloadSegments:
