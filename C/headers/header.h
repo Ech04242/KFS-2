@@ -69,3 +69,6 @@ void print_user();
 
 // init.c
 void    init_all_profil();
+
+// commande.c
+void check_cmd();

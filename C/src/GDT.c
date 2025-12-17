@@ -16,7 +16,8 @@ typedef struct GDT
 void encodeGdtEntry(uint8_t *target, struct GDT source)
 {
     // Check the limit to make sure that it can be encoded
-    if (source.limit > 0xFFFFF) {kerror("GDT cannot encode limits larger than 0xFFFFF");}
+    if (source.limit > 0xFFFFF) 
+		kerror("GDT cannot encode limits larger than 0xFFFFF");
     
     // Encode the limit
     target[0] = source.limit & 0xFF;
