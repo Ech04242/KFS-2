@@ -146,7 +146,8 @@ run_monitoring:
 	telnet 127.0.0.1 1234
 
 run_debug:
-	qemu-system-i386 -kernel $(NAME).bin -s -S & gdb -x .gdbinit
+	qemu-system-i386 -cdrom ./iso/$(NAME).iso -s -S & gdb
+# -x .gdbinit
 
 all: fclean $(NAME) build_iso run_iso
 debug: fclean $(NAME) build_iso run_debug 

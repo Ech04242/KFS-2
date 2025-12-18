@@ -27,7 +27,7 @@ section .text
 
 _start:
     mov esp, stack_top     ; Initialise la pile
-;    cli
+    cli
     mov esp, stack_top
     call kernel_main       ; Appel du noyau en C
 
