@@ -9,13 +9,14 @@ struct GDT_ptr *gdt_ptr = (struct GDT_ptr *) 0x00000800; // Information de osdev
 
 void create_descriptor(uint32_t id, uint32_t base, uint32_t limit, uint8_t access, uint16_t flag)
 {
+	(void) flag;
+
 	gdt_content[id].limit = limit & 0xFFFF;
 	gdt_content[id].base_low = (base & 0xFFFF);
 	gdt_content[id].base_mid = (base >> 16) & 0xFF;
 	gdt_content[id].base_high = (base >> 16) & 0xFF;
 	gdt_content[id].access = access;
-	gdt_content[id].flags = flag & 0XF;
-	gdt_content[id].flags |= ((flag << 4) & 0xF0);
+    gdt_content[id].flags = ((limit >> 16) & 0x0F) | 0xC0;
 }
 
 
