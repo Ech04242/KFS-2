@@ -4,66 +4,36 @@
 #include "../headers/GDT_header.h"
 
 
-typedef struct GDT
-{
-	limit;
-	base;
-	access_byte;
-	flags;
-};
+gdt gdt_content[GDT_ENTRIES];
+struct GDT_ptr *gdt_ptr = (struct GDT_ptr *) 0x00000800; // Information de osdev
 
-
-void encodeGdtEntry(uint8_t *target, struct GDT source)
+void create_descriptor(uint32_t id, uint32_t base, uint32_t limit, uint8_t access, uint16_t flag)
 {
-    // Check the limit to make sure that it can be encoded
-    if (source.limit > 0xFFFFF) {kerror("GDT cannot encode limits larger than 0xFFFFF");}
-    
-    // Encode the limit
-    target[0] = source.limit & 0xFF;
-    target[1] = (source.limit >> 8) & 0xFF;
-    target[6] = (source.limit >> 16) & 0x0F;
-    
-    // Encode the base
-    target[2] = source.base & 0xFF;
-    target[3] = (source.base >> 8) & 0xFF;
-    target[4] = (source.base >> 16) & 0xFF;
-    target[7] = (source.base >> 24) & 0xFF;
-    
-    // Encode the access byte
-    target[5] = source.access_byte;
-    
-    // Encode the flags
-    target[6] |= (source.flags << 4);
+	(void) flag;
+
+	gdt_content[id].limit = limit & 0xFFFF;
+	gdt_content[id].base_low = (base & 0xFFFF);
+	gdt_content[id].base_mid = (base >> 16) & 0xFF;
+	gdt_content[id].base_high = (base >> 16) & 0xFF;
+	gdt_content[id].access = access;
+    gdt_content[id].flags = ((limit >> 16) & 0x0F) | 0xC0;
 }
 
 
-void create_descriptor(uint32_t base, uint32_t limit, uint16_t flag)
-{
-	uint64_t descriptor;
- 
-	// Create the high 32 bit segment
-	descriptor  =  limit       & 0x000F0000;         // set limit bits 19:16
-	descriptor |= (flag <<  8) & 0x00F0FF00;         // set type, p, dpl, s, g, d/b, l and avl fields
-	descriptor |= (base >> 16) & 0x000000FF;         // set base bits 23:16
-	descriptor |=  base        & 0xFF000000;         // set base bits 31:24
- 
-	// Shift by 32 to allow for low part of segment
-	descriptor <<= 32;
- 
-	// Create the low 32 bit segment
-	descriptor |= base  << 16;                       // set base bits 15:0
-	descriptor |= limit  & 0x0000FFFF;               // set limit bits 15:0
- 
-	printf("0x%.16llX\n", descriptor);
-}
+
 
 int GDT_init(void)
 {
-	create_descriptor(0, 0, 0);
-	create_descriptor(0, 0x000FFFFF, (GDT_CODE_PL0));
-	create_descriptor(0, 0x000FFFFF, (GDT_DATA_PL0));
-	create_descriptor(0, 0x000FFFFF, (GDT_CODE_PL3));
-	create_descriptor(0, 0x000FFFFF, (GDT_DATA_PL3));
- 
+	gdt_ptr->limit = (sizeof(gdt) * GDT_ENTRIES) - 1;
+	gdt_ptr->base = (uint32_t) &gdt_content;
+
+	create_descriptor(0, 0, 0, 0, 0);
+	create_descriptor(1, 0, 0x000FFFFF, (uint8_t) (GDT_CODE_PL0), FLAG_32);
+	create_descriptor(2, 0, 0x000FFFFF, (uint8_t) (GDT_DATA_PL0), FLAG_32);
+	create_descriptor(3, 0, 0x000FFFFF, (uint8_t) (GDT_STACK_PL0), FLAG_32);
+	create_descriptor(4, 0, 0x000FFFFF, (uint8_t) (GDT_CODE_PL3), FLAG_32);
+	create_descriptor(5, 0, 0x000FFFFF, (uint8_t) (GDT_DATA_PL3), FLAG_32);
+	create_descriptor(6, 0, 0x000FFFFF, (uint8_t) (GDT_STACK_PL3), FLAG_32);
+	setGdt((uint32_t) gdt_ptr);
 	return 0;
 }

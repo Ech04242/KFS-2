@@ -1,2 +1,2 @@
 target remote localhost:1234
-file kfs1.bin
+file kfs2.bin
