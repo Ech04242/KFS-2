@@ -43,13 +43,11 @@ static void	print_gdt(){
 static void clear(){
 	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
 	for (size_t y = 0; y < VGA_HEIGHT; y++)
-	{
 		for (size_t x = 0; x < VGA_WIDTH; x++)
 		{
 			const size_t index = y * VGA_WIDTH + x;
 			terminal_buffer[index] = vga_entry('\0', terminal_color);
 		}
-	}
 	terminal_row[activ_user] = 0;
 	terminal_column[activ_user] = 0;
 	ft_memcpy(profile_buffers[activ_user], terminal_buffer, VGA_WIDTH * VGA_HEIGHT * sizeof(uint16_t));
@@ -97,9 +95,8 @@ static void echo(){
 	size_t	end = start + 67;
 
 	char cmd[VGA_WIDTH - 6 - 5];
-	for (size_t i = 0; start <= end; start++) {
+	for (size_t i = 0; start <= end; start++)
 		cmd[i++] = (char)terminal_buffer[start];
-	}
 	ft_printk("\n%s\n", cmd);
 }
 

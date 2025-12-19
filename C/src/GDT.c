@@ -19,9 +19,6 @@ void create_descriptor(uint32_t id, uint32_t base, uint32_t limit, uint8_t acces
     gdt_content[id].flags = ((limit >> 16) & 0x0F) | 0xC0;
 }
 
-
-
-
 int GDT_init(void)
 {
 	gdt_ptr->limit = (sizeof(gdt) * GDT_ENTRIES) - 1;
