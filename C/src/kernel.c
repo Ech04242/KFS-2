@@ -11,10 +11,16 @@ uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
 extern void outb(uint16_t port, uint8_t value);
 
-static inline uint8_t vga_entry_color(enum vga_color text_color, enum vga_color bg_color)
+inline uint8_t vga_entry_color(enum vga_color text_color, enum vga_color bg_color)
 { 
 	return (text_color | bg_color << 4); 
 }
+
+inline uint16_t vga_entry(unsigned char c, uint8_t color)
+{ 
+	return ((uint16_t) c | (uint16_t) color << 8); 
+}
+
 
 void term_move_cursor()
 {
@@ -25,11 +31,6 @@ void term_move_cursor()
     outb(VGA_PORT_DATA, (pos >> 8) & 0xFF);
     outb(VGA_PORT_COMMAND, 15);
     outb(VGA_PORT_DATA, pos & 0xFF);
-}
-
-static inline uint16_t vga_entry(unsigned char c, uint8_t color)
-{ 
-	return ((uint16_t) c | (uint16_t) color << 8); 
 }
 
 void term_init()
