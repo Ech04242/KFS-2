@@ -1,15 +1,15 @@
 #pragma once
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stddef.h>
-
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define VGA_WIDTH 80
 #define VGA_HEIGHT 25
 #define VGA_MEMORY 0xB8000
-
 #define VGA_PORT_COMMAND 0x3D4
 #define VGA_PORT_DATA    0x3D5
 
@@ -43,6 +43,8 @@ enum vga_color {
 uint32_t ft_strlen(const char* str);
 void	*ft_memmove(void *dest, const void *src, size_t n);
 void	*ft_memcpy(void *dest, const void *src, size_t n);
+size_t	ft_memcmp(const void *s1, const void *s2, size_t n);
+
 
 // kernel.c
 void term_init();
@@ -54,6 +56,8 @@ void term_move_cursor();
 void term_put_char(char c);
 void term_scroll();
 void switch_profile(int profile);	
+uint8_t vga_entry_color(enum vga_color text_color, enum vga_color bg_color);
+uint16_t vga_entry(unsigned char c, uint8_t color);
 
 // printk.c
 void ft_printk(const char* fmt, ...);
@@ -62,8 +66,13 @@ void ft_printk(const char* fmt, ...);
 char keyboard_getchar(void);
 
 // print_message.c
-void print_open_message();
-void print_user();
+void 	print_open_message();
+void 	print_user();
+void	print_help();
+
 
 // init.c
 void    init_all_profil();
+
+// commandes.c
+void	check_cmd();

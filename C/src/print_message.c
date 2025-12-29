@@ -16,3 +16,12 @@ void	print_user(){
 	ft_printk("USER >");
 	terminal_color = temp;
 }
+
+void	print_help(){
+	ft_printk("\nvoici les commandes implementer jusqu'a aujourd'hui : \n");
+	ft_printk("     reboot\n");
+	ft_printk("     gdt\n");
+	ft_printk("     color [0 - 255]\n");
+	ft_printk("     echo [STRING]\n");
+	ft_printk("     help\n");
+}

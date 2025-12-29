@@ -11,10 +11,16 @@ uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
 extern void outb(uint16_t port, uint8_t value);
 
-static inline uint8_t vga_entry_color(enum vga_color text_color, enum vga_color bg_color)
+inline uint8_t vga_entry_color(enum vga_color text_color, enum vga_color bg_color)
 { 
 	return (text_color | bg_color << 4); 
 }
+
+inline uint16_t vga_entry(unsigned char c, uint8_t color)
+{ 
+	return ((uint16_t) c | (uint16_t) color << 8); 
+}
+
 
 void term_move_cursor()
 {
@@ -27,11 +33,6 @@ void term_move_cursor()
     outb(VGA_PORT_DATA, pos & 0xFF);
 }
 
-static inline uint16_t vga_entry(unsigned char c, uint8_t color)
-{ 
-	return ((uint16_t) c | (uint16_t) color << 8); 
-}
-
 void term_init()
 {
 	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
@@ -40,7 +41,7 @@ void term_init()
 		for (size_t x = 0; x < VGA_WIDTH; x++)
 		{
 			const size_t index = y * VGA_WIDTH + x;
-			terminal_buffer[index] = vga_entry(' ', terminal_color);
+			terminal_buffer[index] = vga_entry('\0', terminal_color);
 		}
 	}
 	for (uint8_t i = 0; i < NUM_PROFILES; i++){
@@ -82,7 +83,7 @@ void term_scroll()
 	ft_memmove(terminal_buffer, terminal_buffer + VGA_WIDTH, (VGA_HEIGHT - 1) * VGA_WIDTH * sizeof(uint16_t));
     size_t last_line_start = (VGA_HEIGHT - 1) * VGA_WIDTH;
     for (size_t i = 0; i < VGA_WIDTH; i++) {
-        terminal_buffer[last_line_start + i] = vga_entry(' ', terminal_color);
+        terminal_buffer[last_line_start + i] = vga_entry('\0', terminal_color);
     }
 	uint16_t* vga = (uint16_t*)VGA_MEMORY;
 	for (int i = 0; i < VGA_WIDTH * VGA_HEIGHT; i++) {

@@ -11,38 +11,32 @@ section .multiboot
     dd MBFLAGS
     dd CHECKSUM
 
+
 section .bss
     align 16
 stack_bottom:
     resb 16384            ; réserve 16 Ko pour la pile
 stack_top:
 
+
 section .text
     global _start
     extern kernel_main
+    extern gdtr
+
 
 _start:
     mov esp, stack_top     ; Initialise la pile
+    cli
+    mov esp, stack_top
     call kernel_main       ; Appel du noyau en C
-    cli                    ; Désactive interruptions
+
+
+PModeMain:
+; load DS, ES, FS, GS, SS, ESP
+
 
 .hang:
     hlt                    ; Stoppe le processeur en attendant interruption
     jmp .hang              ; Boucle infinie
 
-; Fonction outb : void outb(uint16_t port, uint8_t val);
-    global outb
-outb:
-    ; Paramètres sur la pile: [esp + 4] = port, [esp + 8] = valeur
-    mov dx, [esp + 4]
-    mov al, [esp + 8]
-    out dx, al
-    ret
-
-; Fonction inb : uint8_t inb(uint16_t port);
-    global inb
-inb:
-    mov dx, [esp + 4]
-    in al, dx
-    movzx eax, al
-    ret

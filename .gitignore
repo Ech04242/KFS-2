@@ -1,0 +1,6 @@
+.obj/
+.objnasm/
+.vscode/
+iso/
+kfs2.bin
+kfs2.iso
